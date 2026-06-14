@@ -6,6 +6,7 @@ const { connectDB } = require("./src/config/db");
 const cookieParser = require("cookie-parser");
 const authRoute = require("./src/routes/authRoute");
 const userRoute = require("./src/routes/userRoute");
+const productRoute = require("./src/routes/productRoute");
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ connectDB();
 
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/product", productRoute);
 
 const PORT = process.env.PORT;
 
