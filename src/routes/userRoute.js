@@ -1,8 +1,15 @@
 const express = require("express");
-const { register } = require("../controllers/userController");
+const {
+  getProfile,
+  updateProfile,
+  deleteProfile,
+} = require("../controllers/userController");
+const { isAuthenticated } = require("../middlewares/isauthentication");
 
 const router = express.Router();
 
-router.post("/register", register);
+router.get("/myprofile", isAuthenticated, getProfile);
+router.put("/updateProfile", isAuthenticated, updateProfile);
+router.delete("/deleteProfile", isAuthenticated, deleteProfile);
 
 module.exports = router;

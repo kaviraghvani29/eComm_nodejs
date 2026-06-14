@@ -4,7 +4,8 @@ const cors = require("cors");
 const morgan = require("morgan");
 const { connectDB } = require("./src/config/db");
 const cookieParser = require("cookie-parser");
-const userRoutes = require("./src/routes/userRoute");
+const authRoute = require("./src/routes/authRoute");
+const userRoute = require("./src/routes/userRoute");
 
 dotenv.config();
 
@@ -19,7 +20,8 @@ app.use(cookieParser());
 
 connectDB();
 
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/user", userRoute);
 
 const PORT = process.env.PORT;
 

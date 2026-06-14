@@ -1,42 +1,63 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const { generateToken } = require("../utils/generateToken");
 
-exports.register = async (req, res) => {
+// get profile
+exports.getProfile = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const user = await User.findById(req.user.id);
 
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exist",
-      });
-    }
-
-    const hashedPass = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPass,
-    });
-
-    User.password = undefined;
-
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "User registered successfully",
       user,
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// update profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.user.id, req.body, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+//delete profile
+exports.deleteProfile = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User Deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
